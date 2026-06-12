@@ -1,0 +1,23 @@
+<div class="home">
+  <header class="home__header">
+    <h1 class="home__logo">tipo<span>rápido</span></h1>
+    <p class="home__subtitle">Selecciona una lección para empezar</p>
+  </header>
+
+  <div class="loading" *ngIf="loading">Cargando lecciones...</div>
+  <div class="error" *ngIf="error">No se pudo conectar con el servidor.</div>
+
+  <ul class="lesson-list" *ngIf="!loading && !error">
+    <li
+      *ngFor="let lesson of lessons"
+      class="lesson-card"
+      (click)="startLesson(lesson.id)"
+    >
+      <div class="lesson-card__top">
+        <span class="lesson-card__id">#{{ lesson.id + 1 }}</span>
+      </div>
+      <h2 class="lesson-card__title">{{ lesson.title }}</h2>
+      <p class="lesson-card__preview">{{ lesson.text.slice(0, 60) }}…</p>
+    </li>
+  </ul>
+</div>

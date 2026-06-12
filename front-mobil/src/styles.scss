@@ -1,0 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --border: #2a2d3a;
+  --accent: #22c55e;
+  --accent-red: #f87171;
+  --text-primary: #f1f5f9;
+  --text-muted: #64748b;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "Inter", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}

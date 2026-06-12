@@ -1,0 +1,92 @@
+.home {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 2rem 1rem 3rem;
+  max-width: 480px;
+  margin: 0 auto;
+
+  &__header {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  &__logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -1px;
+    margin-bottom: 0.5rem;
+    span {
+      color: var(--accent);
+    }
+  }
+
+  &__subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.error {
+  color: var(--accent-red);
+}
+
+.lesson-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lesson-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    transform 0.1s;
+
+  &:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: scale(0.99);
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  &__id {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.35rem;
+  }
+
+  &__preview {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+}

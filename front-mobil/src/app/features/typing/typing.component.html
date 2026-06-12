@@ -1,0 +1,73 @@
+<div class="typing-page" *ngIf="lesson">
+  <header class="typing-header">
+    <button class="btn-back" (click)="goHome()">← Volver</button>
+    <span class="lesson-title">{{ lesson.title }}</span>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat__val">{{ wpm }}</span>
+      <span class="stat__lbl">WPM</span>
+    </div>
+    <div class="stat">
+      <span
+        class="stat__val"
+        [ngClass]="{ good: (accuracy ?? 0) >= 90, bad: (accuracy ?? 100) < 70 }"
+      >
+        {{ accuracy !== null ? accuracy + "%" : "—" }}
+      </span>
+      <span class="stat__lbl">Precisión</span>
+    </div>
+    <div class="stat">
+      <span class="stat__val">{{ elapsedSeconds }}s</span>
+      <span class="stat__lbl">Tiempo</span>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-fill" [style.width.%]="progress"></div>
+  </div>
+
+  <div class="text-area" [ngClass]="{ inactive: !started && !finished }">
+    <span
+      *ngFor="let c of chars; let i = index"
+      class="char"
+      [ngClass]="{
+        correct: c.status === 'correct',
+        wrong: c.status === 'wrong',
+        cursor: i === currentIndex && !finished,
+      }"
+      >{{ c.char }}</span
+    >
+  </div>
+
+  <p class="hint" *ngIf="!started && !finished">
+    Empieza a escribir para iniciar · <kbd>Esc</kbd> para volver
+  </p>
+
+  <div class="result-panel" *ngIf="finished && result">
+    <h2 class="result-panel__title">¡Lección completada! 🎉</h2>
+    <div class="result-grid">
+      <div class="result-stat">
+        <span class="result-stat__val">{{ result.wpm }}</span>
+        <span class="result-stat__lbl">WPM</span>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat__val">{{ result.accuracy }}%</span>
+        <span class="result-stat__lbl">Precisión</span>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat__val">{{ result.timeSeconds }}s</span>
+        <span class="result-stat__lbl">Tiempo</span>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat__val">{{ result.errors }}</span>
+        <span class="result-stat__lbl">Errores</span>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="btn-secondary" (click)="restart()">↺ Repetir</button>
+      <button class="btn-primary" (click)="goHome()">← Lecciones</button>
+    </div>
+  </div>
+</div>
