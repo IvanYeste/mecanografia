@@ -28,7 +28,10 @@
     <div class="progress-fill" [style.width.%]="progress"></div>
   </div>
 
-  <div class="text-area" [ngClass]="{ inactive: !started && !finished }">
+  <div
+    class="text-area"
+    [ngClass]="{ inactive: !started && !finished, celebrating: celebrating }"
+  >
     <span
       *ngFor="let c of chars; let i = index"
       class="char"
@@ -36,13 +39,14 @@
         correct: c.status === 'correct',
         wrong: c.status === 'wrong',
         cursor: i === currentIndex && !finished,
+        wave: c.wave,
       }"
       >{{ c.char }}</span
     >
   </div>
 
   <p class="hint" *ngIf="!started && !finished">
-    Empieza a escribir para iniciar · <kbd>Esc</kbd> para volver
+    Empieza a escribir · <kbd>Esc</kbd> volver
   </p>
 
   <div class="result-panel" *ngIf="finished && result">
@@ -68,6 +72,9 @@
     <div class="result-actions">
       <button class="btn-secondary" (click)="restart()">↺ Repetir</button>
       <button class="btn-primary" (click)="goHome()">← Lecciones</button>
+      <button class="btn-next" *ngIf="nextLessonId !== null" (click)="goNext()">
+        Siguiente → <kbd>Enter</kbd>
+      </button>
     </div>
   </div>
 </div>

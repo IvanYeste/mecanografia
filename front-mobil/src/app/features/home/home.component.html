@@ -3,7 +3,12 @@
     <h1 class="home__logo">tipo<span>rápido</span></h1>
     <p class="home__subtitle">Selecciona una lección para empezar</p>
   </header>
-  <div class="setup-bar" *ngIf="completedCount === 273">
+  <div
+    class="setup-bar"
+    *ngIf="
+      completedCount === 273 || completedCount === 1 || completedCount == 0
+    "
+  >
     <p class="setup-text">¿Ya completaste lecciones anteriores?</p>
     <button class="btn-setup" (click)="markUpTo(310)">
       Marcar 1-273 como completadas

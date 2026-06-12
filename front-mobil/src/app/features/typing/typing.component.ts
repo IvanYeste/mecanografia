@@ -14,6 +14,7 @@ import { Lesson, TypingResult } from '../../core/models/lesson.model';
 interface CharState {
   char: string;
   status: 'pending' | 'correct' | 'wrong';
+  wave?: boolean;
 }
 
 @Component({
@@ -30,11 +31,13 @@ export class TypingComponent implements OnInit, OnDestroy {
   private progressService = inject(ProgressService);
 
   lesson: Lesson | undefined;
+  nextLessonId: number | null = null;
   chars: CharState[] = [];
   currentIndex = 0;
 
   started = false;
   finished = false;
+  celebrating = false;
   result: TypingResult | null = null;
 
   private startTime = 0;
@@ -52,6 +55,7 @@ export class TypingComponent implements OnInit, OnDestroy {
       next: (lesson) => {
         this.lesson = lesson;
         this.buildChars(lesson.text);
+        this.checkNextLesson(lesson.id);
       },
       error: () => this.router.navigate(['/']),
     });
@@ -61,13 +65,30 @@ export class TypingComponent implements OnInit, OnDestroy {
     this.stopTimer();
   }
 
+  private checkNextLesson(currentId: number): void {
+    this.lessonService.getLessonById(currentId + 1).subscribe({
+      next: () => (this.nextLessonId = currentId + 1),
+      error: () => (this.nextLessonId = null),
+    });
+  }
+
   private buildChars(text: string): void {
-    this.chars = text.split('').map((char) => ({ char, status: 'pending' }));
+    this.chars = text
+      .split('')
+      .map((char) => ({ char, status: 'pending', wave: false }));
   }
 
   @HostListener('window:keydown', ['$event'])
   onKeyDown(e: KeyboardEvent): void {
-    if (this.finished) return;
+    if (this.celebrating) return;
+
+    if (this.finished) {
+      if (e.key === 'Enter' && this.nextLessonId !== null) {
+        this.goNext();
+      }
+      return;
+    }
+
     if (e.key === 'Escape') {
       this.goHome();
       return;
@@ -78,6 +99,7 @@ export class TypingComponent implements OnInit, OnDestroy {
       this.handleBackspace();
       return;
     }
+
     if (!this.started) {
       this.started = true;
       this.startTime = Date.now();
@@ -130,17 +152,38 @@ export class TypingComponent implements OnInit, OnDestroy {
   private finish(): void {
     this.stopTimer();
     this.finished = true;
+    this.celebrating = true;
     this.elapsedSeconds = Math.round((Date.now() - this.startTime) / 1000);
     this.updateStats();
+
     this.result = {
       wpm: this.wpm,
       accuracy: this.accuracy ?? 100,
       timeSeconds: this.elapsedSeconds,
       errors: this.errors,
     };
+
     if (this.lesson) {
       this.progressService.save(this.lesson.id, this.result);
     }
+
+    // Animación ola
+    this.playWave();
+  }
+
+  private playWave(): void {
+    const delay = 18;
+    this.chars.forEach((_, i) => {
+      setTimeout(() => {
+        this.chars[i].wave = true;
+        setTimeout(() => {
+          this.chars[i].wave = false;
+          if (i === this.chars.length - 1) {
+            this.celebrating = false;
+          }
+        }, 400);
+      }, i * delay);
+    });
   }
 
   get progress(): number {
@@ -157,8 +200,15 @@ export class TypingComponent implements OnInit, OnDestroy {
     this.accuracy = null;
     this.started = false;
     this.finished = false;
+    this.celebrating = false;
     this.result = null;
     if (this.lesson) this.buildChars(this.lesson.text);
+  }
+
+  goNext(): void {
+    if (this.nextLessonId !== null) {
+      this.router.navigate(['/lesson', this.nextLessonId]);
+    }
   }
 
   goHome(): void {
