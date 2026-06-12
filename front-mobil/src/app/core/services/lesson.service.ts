@@ -6,7 +6,7 @@ import { Lesson } from '../models/lesson.model';
 @Injectable({ providedIn: 'root' })
 export class LessonService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8000';
+  private apiUrl = 'https://mecanografia-back.onrender.com';
 
   getLessons(): Observable<Lesson[]> {
     return this.http.get<Lesson[]>(`${this.apiUrl}/lessons`).pipe(
