@@ -35,11 +35,9 @@
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-family: var(--font-fantasy);
+  letter-spacing: 1px;
 }
-
 .stats-bar {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

@@ -28,10 +28,7 @@
     <div class="progress-fill" [style.width.%]="progress"></div>
   </div>
 
-  <div
-    class="text-area"
-    [ngClass]="{ inactive: !started && !finished, celebrating: celebrating }"
-  >
+  <div class="text-area" [ngClass]="{ inactive: !started && !finished }">
     <span
       *ngFor="let c of chars; let i = index"
       class="char"
@@ -39,7 +36,6 @@
         correct: c.status === 'correct',
         wrong: c.status === 'wrong',
         cursor: i === currentIndex && !finished,
-        wave: c.wave,
       }"
       >{{ c.char }}</span
     >
