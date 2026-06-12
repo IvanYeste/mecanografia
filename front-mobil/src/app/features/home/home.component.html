@@ -3,13 +3,43 @@
     <h1 class="home__logo">tipo<span>rápido</span></h1>
     <p class="home__subtitle">Selecciona una lección para empezar</p>
   </header>
+  <div class="setup-bar" *ngIf="completedCount === 0">
+    <p class="setup-text">¿Ya completaste lecciones anteriores?</p>
+    <button class="btn-setup" (click)="markUpTo(273)">
+      Marcar 1-273 como completadas
+    </button>
+  </div>
+
+  <div class="filter-bar" *ngIf="!loading && !error">
+    <button
+      class="filter-btn"
+      [class.active]="filter === 'all'"
+      (click)="setFilter('all')"
+    >
+      Todas ({{ lessons.length }})
+    </button>
+    <button
+      class="filter-btn"
+      [class.active]="filter === 'completed'"
+      (click)="setFilter('completed')"
+    >
+      ✓ Completadas ({{ completedCount }})
+    </button>
+    <button
+      class="filter-btn"
+      [class.active]="filter === 'pending'"
+      (click)="setFilter('pending')"
+    >
+      Pendientes ({{ lessons.length - completedCount }})
+    </button>
+  </div>
 
   <div class="loading" *ngIf="loading">Cargando lecciones...</div>
   <div class="error" *ngIf="error">No se pudo conectar con el servidor.</div>
 
   <ul class="lesson-list" *ngIf="!loading && !error">
     <li
-      *ngFor="let lesson of lessons"
+      *ngFor="let lesson of filteredLessons"
       class="lesson-card"
       [class.completed]="getProgress(lesson.id)"
       (click)="startLesson(lesson.id)"
@@ -22,7 +52,6 @@
       </div>
       <h2 class="lesson-card__title">{{ lesson.title }}</h2>
       <p class="lesson-card__preview">{{ lesson.text.slice(0, 60) }}…</p>
-
       <div class="lesson-card__stats" *ngIf="getProgress(lesson.id) as p">
         <span class="stat-pill wpm">{{ p.bestWpm }} WPM</span>
         <span class="stat-pill acc">{{ p.lastAccuracy }}%</span>
