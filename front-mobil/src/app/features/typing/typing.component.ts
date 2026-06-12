@@ -8,6 +8,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgFor, NgClass, NgIf } from '@angular/common';
 import { LessonService } from '../../core/services/lesson.service';
+import { ProgressService } from '../../core/services/progress.service';
 import { Lesson, TypingResult } from '../../core/models/lesson.model';
 
 interface CharState {
@@ -26,6 +27,7 @@ export class TypingComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private lessonService = inject(LessonService);
+  private progressService = inject(ProgressService);
 
   lesson: Lesson | undefined;
   chars: CharState[] = [];
@@ -136,6 +138,9 @@ export class TypingComponent implements OnInit, OnDestroy {
       timeSeconds: this.elapsedSeconds,
       errors: this.errors,
     };
+    if (this.lesson) {
+      this.progressService.save(this.lesson.id, this.result);
+    }
   }
 
   get progress(): number {

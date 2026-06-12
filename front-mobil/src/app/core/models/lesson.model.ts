@@ -10,3 +10,13 @@ export interface TypingResult {
   timeSeconds: number;
   errors: number;
 }
+
+export interface LessonProgress {
+  lessonId: number;
+  bestWpm: number;
+  lastWpm: number;
+  lastAccuracy: number;
+  lastTime: number;
+  completedAt: string;
+  timesCompleted: number;
+}

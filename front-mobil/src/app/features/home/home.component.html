@@ -11,13 +11,23 @@
     <li
       *ngFor="let lesson of lessons"
       class="lesson-card"
+      [class.completed]="getProgress(lesson.id)"
       (click)="startLesson(lesson.id)"
     >
       <div class="lesson-card__top">
         <span class="lesson-card__id">#{{ lesson.id + 1 }}</span>
+        <span class="lesson-card__done" *ngIf="getProgress(lesson.id)"
+          >✓ Completada</span
+        >
       </div>
       <h2 class="lesson-card__title">{{ lesson.title }}</h2>
       <p class="lesson-card__preview">{{ lesson.text.slice(0, 60) }}…</p>
+
+      <div class="lesson-card__stats" *ngIf="getProgress(lesson.id) as p">
+        <span class="stat-pill wpm">{{ p.bestWpm }} WPM</span>
+        <span class="stat-pill acc">{{ p.lastAccuracy }}%</span>
+        <span class="stat-pill times">× {{ p.timesCompleted }}</span>
+      </div>
     </li>
   </ul>
 </div>
