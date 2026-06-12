@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+ebooklib
+beautifulsoup4
+lxml
