@@ -1,0 +1,261 @@
+/* ===== Layout ===== */
+.page {
+  width: min(1100px, 92%);
+  margin: 0 auto;
+  padding: 28px 18px 44px;
+  margin-top: 64px; /* menos “bajón” */
+}
+
+/* ===== Header sticky pro ===== */
+.header {
+  position: sticky;
+  top: 12px;
+  z-index: 30;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 16px 16px 14px;
+  border-radius: 18px;
+
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+
+  h1 {
+    margin: 0;
+    font-size: clamp(22px, 3vw, 30px);
+    letter-spacing: 0.2px;
+  }
+
+  small {
+    opacity: 0.8;
+  }
+}
+
+/* nav más limpio */
+.lesson-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+
+  span {
+    font-size: 12px;
+    opacity: 0.92;
+  }
+}
+
+.nav-btn {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  width: 30px;
+  height: 30px;
+  border-radius: 12px;
+  cursor: pointer;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.16s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+/* acciones */
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* badges de progreso */
+.progress-info {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 700;
+
+  &.ok {
+    background: rgba(46, 229, 157, 0.12);
+    border-color: rgba(46, 229, 157, 0.22);
+    color: rgba(46, 229, 157, 0.95);
+  }
+}
+
+/* ===== Stats: chips con mejor presencia ===== */
+.stats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0 16px;
+
+  span {
+    padding: 10px 12px;
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.1px;
+  }
+}
+
+/* ===== Botones ===== */
+.btn {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  padding: 10px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  transition: 0.16s ease;
+  font-weight: 800;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  &.primary {
+    border-color: rgba(99, 102, 241, 0.45);
+    background: rgba(99, 102, 241, 0.18);
+
+    &:hover {
+      background: rgba(99, 102, 241, 0.28);
+    }
+  }
+
+  &.ghost {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.12);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+  }
+}
+
+/* ===== Typing box ===== */
+.typing-box {
+  position: relative;
+  width: 100%;
+  min-height: 260px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 18px;
+  box-sizing: border-box;
+
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  cursor: text;
+
+  /* scroll más suave */
+  scroll-behavior: smooth;
+}
+
+/* capa texto */
+.target-layer {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+}
+
+/* textarea invisible */
+.input-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  width: 100%;
+  height: 100%;
+  padding: 18px;
+  box-sizing: border-box;
+
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+
+  color: transparent;
+  caret-color: transparent;
+  opacity: 0;
+}
+
+/* placeholder */
+.loading-text {
+  position: relative;
+  z-index: 2;
+  opacity: 0.7;
+  font-weight: 700;
+}
+
+/* debug */
+.debug {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(229, 231, 235, 0.9);
+  white-space: pre-wrap;
+}
+
+/* responsive */
+@media (max-width: 700px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions {
+    justify-content: flex-start;
+  }
+}

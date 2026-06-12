@@ -1,0 +1,40 @@
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+
+  margin-top: 16px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+
+  padding: 8px 12px;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  font-size: 13.5px;
+  line-height: 1;
+  color: rgba(229, 231, 235, 0.92);
+
+  /* evita que cambie de tamaño raro al crecer el número */
+  font-variant-numeric: tabular-nums;
+
+  b {
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+  }
+}
+
+/* Opcional: en móvil que se apilen más bonito */
+@media (max-width: 520px) {
+  .stats {
+    justify-content: flex-start;
+  }
+}

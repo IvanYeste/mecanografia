@@ -1,0 +1,123 @@
+.target {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(20px, 2.2vw, 30px);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.92);
+
+  /* para que las cajitas “cuadren” mejor */
+  letter-spacing: 0.2px;
+}
+
+/* cada caracter (incluye espacios) */
+.ch {
+  display: inline-block;
+  padding: 0 3px;
+  border-radius: 7px;
+  transition: background 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+
+  /* ayuda a que los fondos queden uniformes */
+  min-height: 1.25em;
+}
+
+/* pending: neutro */
+.ch.pending {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+/* correct */
+.ch.correct {
+  background: rgba(46, 229, 157, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(46, 229, 157, 0.22);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* wrong */
+.ch.wrong {
+  background: rgba(255, 90, 122, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(255, 90, 122, 0.22);
+  color: rgba(255, 255, 255, 0.97);
+}
+
+/* caret: borde + “blink” suave */
+.ch.caret {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.05);
+  animation: caretPulse 1s ease-in-out infinite;
+}
+
+@keyframes caretPulse {
+  0% {
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.22);
+  }
+  50% {
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.36);
+  }
+  100% {
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.22);
+  }
+}
+
+/* espacios: “cajita” fija para que se vea el progreso */
+.space .space-mark {
+  min-width: 0.85ch;
+}
+
+/* enter: visible pero elegante */
+.nl {
+  display: inline;
+}
+
+.nl-mark {
+  padding: 0 8px;
+  margin: 0 2px;
+  border-radius: 999px;
+  opacity: 0.75;
+  font-weight: 900;
+  font-size: 0.85em;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* cuando el enter está “pending”, que no moleste */
+.nl-mark.pending {
+  opacity: 0.45;
+}
+
+/* bonus: cuando te equivocas en enter, que se note */
+.nl-mark.wrong {
+  opacity: 0.95;
+}
+.ch.wrong {
+  background: rgba(255, 0, 0, 0.25);
+  outline: 2px solid rgba(255, 0, 0, 0.6);
+  border-radius: 6px;
+}
+
+.ch.wrong.caret {
+  outline-width: 3px;
+}
+
+.ch.wrong.flash {
+  animation: wrongFlash 0.14s ease-in-out;
+}
+
+@keyframes wrongFlash {
+  0% {
+    transform: translateX(0);
+  }
+  33% {
+    transform: translateX(-2px);
+  }
+  66% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

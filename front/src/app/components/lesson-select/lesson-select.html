@@ -1,0 +1,115 @@
+<div class="wrap">
+  <header class="topbar">
+    <div class="top-left">
+      <div class="title-row">
+        <h1>Selección de lecciones</h1>
+        <span class="badge"> progreso en <span class="k">localStorage</span> </span>
+      </div>
+
+      <div class="hint">
+        Elige una lección o usa el buscador. Sí, esto también se acuerda de lo que hiciste.
+      </div>
+    </div>
+
+    <div class="top-right">
+      @if (lessons$ | async; as lessons) {
+      <div class="stats-mini">
+        <div class="chip">
+          <span class="dot ok"></span>
+          {{ completedCount }} / {{ totalCount }} completadas
+        </div>
+      </div>
+      }
+    </div>
+  </header>
+
+  <!-- Estado carga -->
+  @if (lessons$ | async; as lessons) { @if (lessons.length === 0) {
+  <div class="state">
+    <div class="state-title">No hay lecciones.</div>
+    <div class="state-sub">Revisa el backend o el split del texto.</div>
+  </div>
+  } @else {
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search">
+      <span class="search-ico">⌕</span>
+      <input
+        type="text"
+        placeholder="Buscar por contenido… (filtra por preview)"
+        [(ngModel)]="query"
+        (ngModelChange)="applyFilter(lessons)"
+      />
+    </div>
+
+    <div class="filters">
+      <button
+        type="button"
+        class="filter"
+        [class.active]="statusFilter === 'all'"
+        (click)="setStatus('all', lessons)"
+      >
+        Todas
+      </button>
+      <button
+        type="button"
+        class="filter"
+        [class.active]="statusFilter === 'pending'"
+        (click)="setStatus('pending', lessons)"
+      >
+        Pendientes
+      </button>
+      <button
+        type="button"
+        class="filter"
+        [class.active]="statusFilter === 'done'"
+        (click)="setStatus('done', lessons)"
+      >
+        Completadas
+      </button>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <section class="grid">
+    @for (l of filteredLessons; track l.id; let i = $index) {
+    <article class="card" [class.card-done]="isCompleted(l.id)">
+      <div class="card-top">
+        <div class="left">
+          <div class="idx">#{{ i + 1 }}</div>
+          <h3 class="title">{{ lessonPreview(l.text) }}</h3>
+        </div>
+
+        <div class="pill" [class.ok]="isCompleted(l.id)" [class.todo]="!isCompleted(l.id)">
+          {{ isCompleted(l.id) ? 'COMPLETADA' : 'PENDIENTE' }}
+        </div>
+      </div>
+
+      <div class="card-bottom">
+        <button class="cta" (click)="openLesson(l.id)">
+          <span>Empezar</span>
+          <span class="arrow">→</span>
+        </button>
+
+        <button class="ghost" type="button" (click)="copyPreview(l.text)">Copiar preview</button>
+      </div>
+    </article>
+    }
+  </section>
+
+  <!-- Footer -->
+  <div class="footer-note">
+    Tip: si te sientes valiente, repite una completada. Si te sientes listo, ve a por la siguiente.
+  </div>
+  } } @else {
+  <div class="state">
+    <div class="state-title">Cargando lecciones…</div>
+    <div class="state-sub">Si esto tarda una eternidad, tu backend te está troleando.</div>
+
+    <div class="skeleton">
+      <div class="sk-card" *ngFor="let _ of [1, 2, 3, 4, 5, 6, 7, 8]"></div>
+    </div>
+  </div>
+  }
+</div>

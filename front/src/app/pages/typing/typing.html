@@ -1,0 +1,89 @@
+<div class="page">
+  <header class="header">
+    <div>
+      <h1>Mecanografía</h1>
+
+      <small class="lesson-nav">
+        <button class="btn ghost" type="button" (click)="goToLessons()">← Lecciones</button>
+
+        <button
+          class="nav-btn"
+          type="button"
+          aria-label="Lección anterior"
+          (click)="prev()"
+          [disabled]="index === 0"
+        >
+          ←
+        </button>
+
+        <span>Lección {{ index + 1 }} / {{ lessons.length }}</span>
+
+        <button
+          class="nav-btn"
+          type="button"
+          aria-label="Lección siguiente"
+          (click)="next()"
+          [disabled]="index >= lessons.length - 1"
+        >
+          →
+        </button>
+      </small>
+
+      <div class="progress-info" *ngIf="getCurrentProgress() as p">
+        <span class="badge ok" *ngIf="p.completed">✔ Completada</span>
+        <span class="badge">
+          {{ p.accuracy }}% · {{ p.wpm }} WPM · {{ p.errors }} errores · {{ p.elapsed }}s
+        </span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" (click)="reset()">Reiniciar</button>
+
+      <!-- ✅ Siguiente se activa solo al final (aunque esté mal) -->
+      <button class="btn primary" (click)="next()" [disabled]="!isDone()">Siguiente</button>
+
+      <button class="btn ghost" type="button" (click)="markDoneManually()">
+        Marcar completada
+      </button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <span>⏱ {{ elapsed }}s</span>
+    <span>⚡ {{ wpm }} WPM</span>
+    <span>🎯 {{ accuracy }}%</span>
+    <span>❌ {{ attemptErrors }}</span>
+    <span>⌨️ {{ typedRaw.length }} teclas</span>
+  </div>
+
+  <div class="typing-box" (click)="focusInput()">
+    <div *ngIf="!target" class="loading-text">Cargando lección…</div>
+
+    <app-text-target
+      class="target-layer"
+      [target]="target"
+      [typed]="typedAligned"
+      [caretIndex]="caretIndex"
+      [wrongAt]="wrongAt"
+      [flashWrong]="flashWrong"
+    ></app-text-target>
+    <textarea
+      #ta
+      class="input-layer"
+      [(ngModel)]="typedRaw"
+      (ngModelChange)="onInput($event)"
+      (keydown)="onKeyDown($event)"
+      (paste)="onPaste($event)"
+      spellcheck="false"
+      autocomplete="off"
+      autocapitalize="off"
+      autocorrect="off"
+    ></textarea>
+  </div>
+
+  <pre class="debug" *ngIf="debug.enabled">
+target[targetIndex]={{ debug.targetChar }}  code={{ debug.targetCode }}
+raw[rawIndex]={{ debug.rawChar }}  code={{ debug.rawCode }}
+  </pre>
+</div>

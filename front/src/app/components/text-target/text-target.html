@@ -1,0 +1,43 @@
+<div class="target">
+  <ng-container *ngFor="let tok of tokens">
+    <span *ngIf="tok.kind === 'newline'" class="nl">
+      <span
+        class="ch nl-mark"
+        [class.correct]="getCharState(tok.start) === 'correct'"
+        [class.wrong]="getCharState(tok.start) === 'wrong'"
+        [class.pending]="getCharState(tok.start) === 'pending'"
+        [class.caret]="isCaret(tok.start)"
+        aria-label="Enter"
+        >↵</span
+      >
+      <br />
+    </span>
+
+    <span *ngIf="tok.kind === 'space'" class="space">
+      <ng-container *ngFor="let ch of toChars(tok.text); let i = index">
+        <span
+          class="ch space-mark"
+          [class.correct]="getCharState(tok.start + i) === 'correct'"
+          [class.wrong]="getCharState(tok.start + i) === 'wrong'"
+          [class.pending]="getCharState(tok.start + i) === 'pending'"
+          [class.caret]="isCaret(tok.start + i)"
+          >&nbsp;</span
+        >
+      </ng-container>
+    </span>
+
+    <span *ngIf="tok.kind === 'word'" class="word">
+      <ng-container *ngFor="let ch of toChars(tok.text); let i = index">
+        <span
+          class="ch"
+          [class.flash]="flashWrong && wrongAt === tok.start + i"
+          [class.correct]="getCharState(tok.start + i) === 'correct'"
+          [class.wrong]="getCharState(tok.start + i) === 'wrong'"
+          [class.pending]="getCharState(tok.start + i) === 'pending'"
+          [class.caret]="isCaret(tok.start + i)"
+          >{{ ch }}</span
+        >
+      </ng-container>
+    </span>
+  </ng-container>
+</div>
