@@ -3,3 +3,8 @@ uvicorn
 ebooklib
 beautifulsoup4
 lxml
+sqlalchemy
+psycopg2-binary
+python-jose[cryptography]
+passlib[bcrypt]
+email-validator

@@ -1,23 +1,32 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 import { LessonProgress, TypingResult } from '../models/lesson.model';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProgressService {
-  private readonly KEY = 'tipografido_progress';
+  private http = inject(HttpClient);
+  private auth = inject(AuthService);
+  private cache: Record<number, LessonProgress> = {};
+
+  loadAll(): Observable<Record<number, LessonProgress>> {
+    return this.http
+      .get<Record<number, LessonProgress>>(`${this.auth.apiUrl}/progress`)
+      .pipe(tap((data) => (this.cache = data ?? {})));
+  }
 
   getAll(): Record<number, LessonProgress> {
-    const raw = localStorage.getItem(this.KEY);
-    return raw ? JSON.parse(raw) : {};
+    return this.cache;
   }
 
   getLesson(lessonId: number): LessonProgress | null {
-    return this.getAll()[lessonId] ?? null;
+    return this.cache[lessonId] ?? null;
   }
 
-  save(lessonId: number, result: TypingResult): void {
-    const all = this.getAll();
-    const prev = all[lessonId];
-    all[lessonId] = {
+  save(lessonId: number, result: TypingResult): Observable<{ ok: boolean }> {
+    const prev = this.cache[lessonId];
+    const progress: LessonProgress = {
       lessonId,
       bestWpm: prev ? Math.max(prev.bestWpm, result.wpm) : result.wpm,
       lastWpm: result.wpm,
@@ -26,10 +35,15 @@ export class ProgressService {
       completedAt: new Date().toISOString(),
       timesCompleted: prev ? prev.timesCompleted + 1 : 1,
     };
-    localStorage.setItem(this.KEY, JSON.stringify(all));
+    this.cache[lessonId] = progress;
+    return this.http.post<{ ok: boolean }>(
+      `${this.auth.apiUrl}/progress/${lessonId}`,
+      progress,
+    );
   }
 
-  clear(): void {
-    localStorage.removeItem(this.KEY);
+  clear(): Observable<{ ok: boolean }> {
+    this.cache = {};
+    return this.http.delete<{ ok: boolean }>(`${this.auth.apiUrl}/progress`);
   }
 }

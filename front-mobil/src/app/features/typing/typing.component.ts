@@ -175,7 +175,7 @@ export class TypingComponent implements OnInit, OnDestroy {
       errors: this.errors,
     };
     if (this.lesson) {
-      this.progressService.save(this.lesson.id, this.result);
+      this.progressService.save(this.lesson.id, this.result).subscribe();
     }
   }
 

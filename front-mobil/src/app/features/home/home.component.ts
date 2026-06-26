@@ -1,8 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
+import { forkJoin } from 'rxjs';
+import { catchError, of } from 'rxjs';
+
 import { LessonService } from '../../core/services/lesson.service';
 import { ProgressService } from '../../core/services/progress.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Lesson, LessonProgress } from '../../core/models/lesson.model';
 
 type Filter = 'all' | 'completed' | 'pending';
@@ -17,6 +21,7 @@ type Filter = 'all' | 'completed' | 'pending';
 export class HomeComponent implements OnInit {
   private lessonService = inject(LessonService);
   private progressService = inject(ProgressService);
+  private authService = inject(AuthService);
   private router = inject(Router);
 
   lessons: Lesson[] = [];
@@ -26,10 +31,13 @@ export class HomeComponent implements OnInit {
   filter: Filter = 'all';
 
   ngOnInit(): void {
-    this.progress = this.progressService.getAll();
-    this.lessonService.getLessons().subscribe({
-      next: (data) => {
-        this.lessons = data;
+    forkJoin({
+      lessons: this.lessonService.getLessons(),
+      progress: this.progressService.loadAll().pipe(catchError(() => of({}))),
+    }).subscribe({
+      next: ({ lessons }) => {
+        this.lessons = lessons;
+        this.progress = this.progressService.getAll();
         this.loading = false;
       },
       error: () => {
@@ -62,17 +70,24 @@ export class HomeComponent implements OnInit {
   getProgress(id: number): LessonProgress | null {
     return this.progress[id] ?? null;
   }
+
   markUpTo(n: number): void {
+    const saves = [];
     for (let i = 0; i < n; i++) {
       if (!this.progress[i]) {
-        this.progressService.save(i, {
-          wpm: 0,
-          accuracy: 0,
-          timeSeconds: 0,
-          errors: 0,
-        });
+        saves.push(
+          this.progressService.save(i, { wpm: 0, accuracy: 0, timeSeconds: 0, errors: 0 }),
+        );
       }
     }
-    this.progress = this.progressService.getAll();
+    if (saves.length > 0) {
+      forkJoin(saves).subscribe(() => {
+        this.progress = this.progressService.getAll();
+      });
+    }
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

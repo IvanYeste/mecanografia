@@ -1,0 +1,29 @@
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1 class="auth-logo">tipo<span>rápido</span></h1>
+    <p class="auth-sub">Inicia sesión para continuar</p>
+
+    <form class="auth-form" (ngSubmit)="submit()">
+      <label>
+        Email
+        <input type="email" [(ngModel)]="email" name="email" autocomplete="email"
+          required placeholder="tu@email.com" />
+      </label>
+      <label>
+        Contraseña
+        <input type="password" [(ngModel)]="password" name="password"
+          autocomplete="current-password" required placeholder="••••••••" />
+      </label>
+
+      <div class="auth-error" *ngIf="error">{{ error }}</div>
+
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        {{ loading ? 'Entrando…' : 'Iniciar sesión' }}
+      </button>
+    </form>
+
+    <p class="auth-link">
+      ¿No tienes cuenta? <a routerLink="/register">Regístrate</a>
+    </p>
+  </div>
+</div>
