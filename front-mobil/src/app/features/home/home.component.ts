@@ -1,8 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
-import { forkJoin } from 'rxjs';
-import { catchError, of } from 'rxjs';
+import { forkJoin, catchError, of } from 'rxjs';
 
 import { LessonService } from '../../core/services/lesson.service';
 import { ProgressService } from '../../core/services/progress.service';
@@ -126,31 +125,27 @@ export class HomeComponent implements OnInit {
       return;
     }
     this.markingLoading = true;
-    forkJoin(
-      ids.map((id) =>
-        this.progressService.save(id, { wpm: 0, accuracy: 100, timeSeconds: 0, errors: 0 }),
-      ),
-    ).subscribe(() => {
-      this.progress = this.progressService.getAll();
-      this.selected.clear();
-      this.selectMode = false;
-      this.markingLoading = false;
-    });
+    this.progressService
+      .saveBulk(ids, { wpm: 0, accuracy: 100, timeSeconds: 0, errors: 0 })
+      .subscribe(() => {
+        this.progress = this.progressService.getAll();
+        this.selected.clear();
+        this.selectMode = false;
+        this.markingLoading = false;
+      });
   }
 
   markUpTo(n: number): void {
-    const saves = [];
+    const ids: number[] = [];
     for (let i = 0; i < n; i++) {
-      if (!this.progress[i]) {
-        saves.push(
-          this.progressService.save(i, { wpm: 0, accuracy: 0, timeSeconds: 0, errors: 0 }),
-        );
-      }
+      if (!this.progress[i]) ids.push(i);
     }
-    if (saves.length > 0) {
-      forkJoin(saves).subscribe(() => {
-        this.progress = this.progressService.getAll();
-      });
+    if (ids.length > 0) {
+      this.progressService
+        .saveBulk(ids, { wpm: 0, accuracy: 0, timeSeconds: 0, errors: 0 })
+        .subscribe(() => {
+          this.progress = this.progressService.getAll();
+        });
     }
   }
 

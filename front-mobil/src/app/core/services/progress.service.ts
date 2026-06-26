@@ -42,6 +42,28 @@ export class ProgressService {
     );
   }
 
+  saveBulk(lessonIds: number[], result: TypingResult): Observable<{ ok: boolean; saved: number }> {
+    const completedAt = new Date().toISOString();
+    const lessons = lessonIds.map((id) => {
+      const prev = this.cache[id];
+      const progress: LessonProgress = {
+        lessonId: id,
+        bestWpm: prev ? Math.max(prev.bestWpm, result.wpm) : result.wpm,
+        lastWpm: result.wpm,
+        lastAccuracy: result.accuracy,
+        lastTime: result.timeSeconds,
+        completedAt,
+        timesCompleted: prev ? prev.timesCompleted + 1 : 1,
+      };
+      this.cache[id] = progress;
+      return progress;
+    });
+    return this.http.post<{ ok: boolean; saved: number }>(
+      `${this.auth.apiUrl}/progress/bulk`,
+      { lessons },
+    );
+  }
+
   clear(): Observable<{ ok: boolean }> {
     this.cache = {};
     return this.http.delete<{ ok: boolean }>(`${this.auth.apiUrl}/progress`);

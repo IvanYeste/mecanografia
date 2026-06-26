@@ -19,3 +19,7 @@ class LessonProgressSchema(BaseModel):
     lastTime: int
     completedAt: str
     timesCompleted: int
+
+
+class BulkProgressSchema(BaseModel):
+    lessons: list[LessonProgressSchema]

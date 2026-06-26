@@ -167,6 +167,42 @@ def save_progress(
     return {"ok": True}
 
 
+@app.post("/progress/bulk")
+def save_progress_bulk(
+    body: schemas.BulkProgressSchema,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    existing = {
+        row.lesson_id: row
+        for row in db.query(models.Progress)
+        .filter(models.Progress.user_id == current_user.id)
+        .all()
+    }
+    for item in body.lessons:
+        row = existing.get(item.lessonId)
+        if row:
+            row.best_wpm = item.bestWpm
+            row.last_wpm = item.lastWpm
+            row.last_accuracy = item.lastAccuracy
+            row.last_time = item.lastTime
+            row.completed_at = item.completedAt
+            row.times_completed = item.timesCompleted
+        else:
+            db.add(models.Progress(
+                user_id=current_user.id,
+                lesson_id=item.lessonId,
+                best_wpm=item.bestWpm,
+                last_wpm=item.lastWpm,
+                last_accuracy=item.lastAccuracy,
+                last_time=item.lastTime,
+                completed_at=item.completedAt,
+                times_completed=item.timesCompleted,
+            ))
+    db.commit()
+    return {"ok": True, "saved": len(body.lessons)}
+
+
 @app.delete("/progress")
 def reset_progress(
     current_user: models.User = Depends(get_current_user),
