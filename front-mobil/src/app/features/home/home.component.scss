@@ -5,6 +5,10 @@
   max-width: 480px;
   margin: 0 auto;
 
+  &.has-select-bar {
+    padding-bottom: 7rem;
+  }
+
   &__header {
     margin-bottom: 2rem;
     text-align: center;
@@ -13,6 +17,7 @@
     align-items: flex-start;
     justify-content: space-between;
   }
+
 
   &__logo {
     font-size: 2rem;
@@ -191,6 +196,13 @@
   margin-bottom: 0.75rem;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .btn-logout {
   padding: 6px 14px;
   border-radius: 8px;
@@ -202,6 +214,29 @@
   cursor: pointer;
   white-space: nowrap;
   &:hover {
+    border-color: #f87171;
+    color: #f87171;
+  }
+}
+
+.btn-select {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &.active {
     border-color: #f87171;
     color: #f87171;
   }
@@ -220,5 +255,143 @@
   &:hover {
     background: var(--accent);
     color: #0f1117;
+  }
+}
+
+// ── Select mode ────────────────────────────────────────────
+
+.lesson-card {
+  &.selectable {
+    cursor: default;
+    user-select: none;
+
+    &:hover {
+      border-color: var(--border);
+      transform: none;
+    }
+  }
+
+  &.sel-selected {
+    border-color: var(--accent) !important;
+    background: rgba(34, 197, 94, 0.06);
+  }
+
+  &__top-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.sel-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #0f1117;
+  background: transparent;
+  transition: all 0.12s;
+  flex-shrink: 0;
+
+  .sel-selected & {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f1117;
+  }
+}
+
+// ── Select bar (floating bottom) ───────────────────────────
+
+.select-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  z-index: 100;
+  animation: slideUp 0.2s ease both;
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}
+
+.select-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.select-new {
+  font-size: 0.78rem;
+  color: var(--accent);
+}
+
+.sel-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all 0.15s;
+
+  &.ghost {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+
+    &:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  }
+
+  &.primary {
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #0f1117;
+    font-weight: 600;
+    flex: 1;
+
+    &:hover:not(:disabled) {
+      opacity: 0.88;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
   }
 }

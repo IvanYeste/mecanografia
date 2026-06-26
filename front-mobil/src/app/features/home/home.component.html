@@ -1,16 +1,25 @@
-<div class="home">
+<div class="home" [class.has-select-bar]="selectMode">
   <header class="home__header">
     <div>
       <h1 class="home__logo">mecano<span>grafía</span></h1>
       <p class="home__subtitle">Selecciona una lección para empezar</p>
     </div>
-    <button class="btn-logout" (click)="logout()">Cerrar sesión</button>
+    <div class="header-actions">
+      <button
+        class="btn-select"
+        [class.active]="selectMode"
+        (click)="toggleSelectMode()"
+        *ngIf="!loading && !error"
+      >
+        {{ selectMode ? 'Cancelar' : 'Seleccionar' }}
+      </button>
+      <button class="btn-logout" (click)="logout()">Cerrar sesión</button>
+    </div>
   </header>
+
   <div
     class="setup-bar"
-    *ngIf="
-      completedCount === 273 || completedCount === 1 || completedCount == 0
-    "
+    *ngIf="!selectMode && (completedCount === 273 || completedCount === 1 || completedCount == 0)"
   >
     <p class="setup-text">¿Ya completaste lecciones anteriores?</p>
     <button class="btn-setup" (click)="markUpTo(310)">
@@ -50,13 +59,18 @@
       *ngFor="let lesson of filteredLessons"
       class="lesson-card"
       [class.completed]="getProgress(lesson.id)"
-      (click)="startLesson(lesson.id)"
+      [class.selectable]="selectMode"
+      [class.sel-selected]="isSelected(lesson.id)"
+      (click)="onCardClick(lesson.id)"
     >
       <div class="lesson-card__top">
-        <span class="lesson-card__id">#{{ lesson.id + 1 }}</span>
-        <span class="lesson-card__done" *ngIf="getProgress(lesson.id)"
-          >✓ Completada</span
-        >
+        <div class="lesson-card__top-left">
+          <span class="sel-check" *ngIf="selectMode">
+            {{ isSelected(lesson.id) ? '✓' : '' }}
+          </span>
+          <span class="lesson-card__id">#{{ lesson.id + 1 }}</span>
+        </div>
+        <span class="lesson-card__done" *ngIf="getProgress(lesson.id)">✓ Completada</span>
       </div>
       <h2 class="lesson-card__title">{{ lesson.title }}</h2>
       <p class="lesson-card__preview">{{ lesson.text.slice(0, 60) }}…</p>
@@ -67,4 +81,27 @@
       </div>
     </li>
   </ul>
+
+  <!-- Select mode action bar -->
+  <div class="select-bar" *ngIf="selectMode">
+    <div class="select-bar__info">
+      <span class="select-count">{{ selectedCount }} seleccionadas</span>
+      <span class="select-new" *ngIf="selectedNewCount > 0">({{ selectedNewCount }} nuevas)</span>
+    </div>
+    <div class="select-bar__actions">
+      <button class="sel-btn ghost" (click)="selectPending()">
+        Selec. pendientes
+      </button>
+      <button class="sel-btn ghost" (click)="clearSelection()" *ngIf="selectedCount > 0">
+        Limpiar
+      </button>
+      <button
+        class="sel-btn primary"
+        [disabled]="selectedNewCount === 0 || markingLoading"
+        (click)="markSelectedCompleted()"
+      >
+        {{ markingLoading ? 'Guardando…' : 'Marcar completadas' }}
+      </button>
+    </div>
+  </div>
 </div>

@@ -30,6 +30,10 @@ export class HomeComponent implements OnInit {
   error = false;
   filter: Filter = 'all';
 
+  selectMode = false;
+  selected = new Set<number>();
+  markingLoading = false;
+
   ngOnInit(): void {
     forkJoin({
       lessons: this.lessonService.getLessons(),
@@ -59,16 +63,79 @@ export class HomeComponent implements OnInit {
     return Object.keys(this.progress).length;
   }
 
+  get selectedCount(): number {
+    return this.selected.size;
+  }
+
+  get selectedNewCount(): number {
+    return Array.from(this.selected).filter((id) => !this.progress[id]).length;
+  }
+
   setFilter(f: Filter): void {
     this.filter = f;
   }
 
-  startLesson(id: number): void {
-    this.router.navigate(['/lesson', id]);
+  onCardClick(id: number): void {
+    if (this.selectMode) {
+      this.toggleSelect(id);
+    } else {
+      this.router.navigate(['/lesson', id]);
+    }
   }
 
   getProgress(id: number): LessonProgress | null {
     return this.progress[id] ?? null;
+  }
+
+  isSelected(id: number): boolean {
+    return this.selected.has(id);
+  }
+
+  toggleSelectMode(): void {
+    this.selectMode = !this.selectMode;
+    if (!this.selectMode) this.selected.clear();
+  }
+
+  toggleSelect(id: number): void {
+    if (this.selected.has(id)) {
+      this.selected.delete(id);
+    } else {
+      this.selected.add(id);
+    }
+  }
+
+  selectPending(): void {
+    this.filteredLessons
+      .filter((l) => !this.progress[l.id])
+      .forEach((l) => this.selected.add(l.id));
+  }
+
+  selectAll(): void {
+    this.filteredLessons.forEach((l) => this.selected.add(l.id));
+  }
+
+  clearSelection(): void {
+    this.selected.clear();
+  }
+
+  markSelectedCompleted(): void {
+    const ids = Array.from(this.selected).filter((id) => !this.progress[id]);
+    if (ids.length === 0) {
+      this.selected.clear();
+      this.selectMode = false;
+      return;
+    }
+    this.markingLoading = true;
+    forkJoin(
+      ids.map((id) =>
+        this.progressService.save(id, { wpm: 0, accuracy: 100, timeSeconds: 0, errors: 0 }),
+      ),
+    ).subscribe(() => {
+      this.progress = this.progressService.getAll();
+      this.selected.clear();
+      this.selectMode = false;
+      this.markingLoading = false;
+    });
   }
 
   markUpTo(n: number): void {
