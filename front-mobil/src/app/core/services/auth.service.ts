@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 interface AuthResponse {
   access_token: string;
@@ -13,7 +14,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private readonly TOKEN_KEY = 'auth_token';
-  readonly apiUrl = 'https://mecanografia-back.onrender.com';
+  readonly apiUrl = environment.apiUrl;
 
   get token(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
